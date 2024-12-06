@@ -1,228 +1,117 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setFileIdRedux } from '../features/file/fileSlice';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Slide from '@mui/material/Slide';
-import { createProject } from '../api/projet';
-import { createFile } from '../api/file';
-import { createCampaign } from '../api/compaign';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { getFilesInFolder } from '../api/folder';
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
-const Sidebar = () => {
-  const [displayItems, setDisplayItems] = useState(false);
-  const [folders, setFolders] = useState([]);
-  const [files, setFiles] = useState([]);
-  const [verify, setVerify] = useState([]);
-  const [openCreateDialog, setOpenCreateDialog] = useState(false);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [selectFolder, setSelectFolder] = useState(null);
-  const [selectedFolderId, setSelectedFolderId] = useState(null); // ID du folder à supprimer
-  const [selectedFolderName, setSelectedFolderName] = useState('');
-
-  const dispatch = useDispatch();
-  const userId = useSelector(state => state.user.userId);
 
 
+import React, { useState } from "react";
+import { FaBars, FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa"; // Pour les icônes
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
-  const handleClickOpenCreateDialog = () => {
-    setOpenCreateDialog(true);
+const Sidebar = ({services}) => {
+  const selectedService = useSelector((state) => state.service.selectedService);
+  
+
+  console.log(services)
+  const [isOpen, setIsOpen] = useState(true);
+  const [isEtatCivilOpen, setIsEtatCivilOpen] = useState(false);
+  const [isCollectiviteOpen, setIsCollectiviteOpen] = useState(false);
+
+  // Etat pour l'élément actif
+  const [activeMenu, setActiveMenu] = useState("");
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
   };
 
-  const handleCloseCreateDialog = () => {
-    setOpenCreateDialog(false);
+  const toggleMenu = (menu) => {
+    if (menu === 'etatCivil') setIsEtatCivilOpen(!isEtatCivilOpen);
+    if (menu === 'collectivite') setIsCollectiviteOpen(!isCollectiviteOpen);
   };
 
-  const handleCreateProject = async (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const formJson = Object.fromEntries(formData.entries());
-    const { project: name, file } = formJson;
-
-
-    try {
-      const projectData = await createProject({ name });
-      const fileData = await createFile({ name: file, folderId: projectData.data._id });
-      console.log(projectData)
-      await createCampaign({ name: "compagne1", fileId: fileData.data._id });
-
-      setVerify(Date.now()); // Forcer une nouvelle récupération des dossiers
-
-      toast.success("Nouveau projet créé avec succès", { theme: "colored" });
-    } catch (error) {
-      toast.warn("Une erreur s'est produite !!", { theme: "colored" });
-    }
-    handleCloseCreateDialog();
+  const handleMenuClick = (menu) => {
+    setActiveMenu(menu); // Met à jour l'élément actif
   };
 
-  const handleClickOpenDeleteDialog = (folderId, folderName) => {
-    setSelectedFolderId(folderId);
-    setSelectedFolderName(folderName);
-    setOpenDeleteDialog(true);
-  };
 
-  const handleCloseDeleteDialog = () => {
-    setOpenDeleteDialog(false);
-  };
 
-  const handleDelete = async () => {
+  const display = selectedService === "civil_service" ? ( 
+    <>
+        <li className={`dropdown ${activeMenu === 'collectivite' ? 'active' : ''}`}>
+            <div onClick={() => { toggleMenu('collectivite'); handleMenuClick('collectivite'); }} className="dropdown-toggle title-dropdown">
+              Dashboard
+            </div>
+            </li>
+    <li className={`dropdown ${activeMenu === 'etatCivil' ? 'active' : ''} space`}>
+      <div onClick={() => { toggleMenu('etatCivil'); handleMenuClick('etatCivil'); }} className="dropdown-toggle title-dropdown">
+        État Civil {isEtatCivilOpen ? <FaChevronUp /> : <FaChevronDown />}
+      </div>
+      </li>
+      {isEtatCivilOpen && (
+        <ul className="dropdown-menu">
+          <li>
+            <Link to="demande_acte_naissance">Demande d'acte de naissance</Link>
+          </li>
+          <li>
+            <Link to="demande_acte_de_mariage">Demande d'acte de mariage</Link>
+          </li>
+          <li>
+            <Link to="demande_acte_de_deces">Demande d'acte de décès</Link>
+          </li>
+          {/* <li><a href="demande_acte">Demande d'acte de naissance</a></li>
+          <li><a href="#acteDeMariage">Demande d'acte de mariage</a></li>
+          <li><a href="#acteDeDeces">Demande d'acte de décès</a></li> */}
+        </ul>
+      )}
 
-    try {
-     
-      
-      // Effectue la suppression ici, par exemple :
-      await axios.delete(`http://localhost:8080/api/folders/${selectedFolderId}`);
-      setVerify(Date.now()); // Forcer une nouvelle récupération des dossiers
-      toast.success(`Dossier '${selectedFolderName}' supprimé avec succès`, { theme: "colored" });
-    } catch (error) {
-      toast.warn("Erreur lors de la suppression", { theme: "colored" });
-    }
-    handleCloseDeleteDialog();
-  };
+    </>
+  ) : (
+    <>
+        <li className={`dropdown ${activeMenu === 'etatCivil' ? 'active' : ''}`}>
+            <div onClick={() => { toggleMenu('etatCivil'); handleMenuClick('etatCivil'); }} className="dropdown-toggle title-dropdown">
+              Dashboard
+            </div>
+            </li>
+    <li className={`dropdown ${activeMenu === 'collectivite' ? 'active' : ''} space`}>
+      <div onClick={() => { toggleMenu('collectivite'); handleMenuClick('collectivite'); }} className="dropdown-toggle title-dropdown">
+        Collectivité Territoriale {isCollectiviteOpen ? <FaChevronUp /> : <FaChevronDown />}
+      </div>
+      </li>
+      {isCollectiviteOpen && (
+        <ul className="dropdown-menu">
+          <li><a href="#permissionDeConstruire">Demande de permission de construire</a></li>
+        </ul>
+      )}
 
-  const handleClick = async (folderId) => {
-    setSelectFolder(folderId === selectFolder ? null : folderId);
-    setDisplayItems(folderId !== selectFolder);
-
-    if (folderId !== selectFolder) {
-      try {
-     
-      const {data} = await getFilesInFolder(folderId)
-        setFiles(data);
-        console.log(data)
-    
-      } catch (error) {
-        console.error('Error fetching files:', error);
-      }
-    } else {
-      setFiles([]);
-    }
-  };
-
-  const handleFile = (fileId) => {
-    dispatch(setFileIdRedux(fileId));
-  };
+    </>
+  );
+  
 
   return (
-    <div className="sidebar" style={{ marginTop: "10px" }}>
-      <Button variant="outlined" onClick={handleClickOpenCreateDialog}>
-        Open form dialog
-      </Button>
+    <div className="sidebar-container">
+      {/* Bouton pour ouvrir/fermer */}
+      <button className="toggle-btn" onClick={toggleSidebar}>
+        {isOpen ? <FaTimes /> : <FaBars />}
+      </button>
+
+      {/* Contenu de la Sidebar */}
+      <div className={`sidebar ${isOpen ? "open" : ""}`}>
+        <div className="sidebarcontainer">
+
+        <ul>
 
       
-      <Dialog
-        open={openCreateDialog}
-        onClose={handleCloseCreateDialog}
-        PaperProps={{
-          component: 'form',
-          onSubmit: handleCreateProject,
-        }}
-      >
-        <DialogTitle>Créer un projet</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Remplissez les informations pour créer un nouveau projet.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="project"
-            name="project"
-            label="Nom du projet"
-            type="text"
-            fullWidth
-            variant="standard"
-          />
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="file"
-            name="file"
-            label="Nom du fichier"
-            type="text"
-            fullWidth
-            variant="standard"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseCreateDialog}>Retour</Button>
-          <Button type="submit">Créer</Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Dialog pour confirmer la suppression */}
-      <Dialog
-        open={openDeleteDialog}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleCloseDeleteDialog}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle>{"Êtes-vous sûr de vouloir supprimer ce dossier ?"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            Cette action est irréversible et supprimera également tous les fichiers et campagnes associés.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteDialog}>Annuler</Button>
-          <Button onClick={handleDelete }>Supprimer</Button>
-        </DialogActions>
-      </Dialog>
-
-      <ul className="nav">
-        {folders.map(folder => (
-          <li key={folder._id}>
-           
-            <a href="#project-management"  onClick={() => handleClick(folder._id)} className="dropdown-btn">
-              <div >
-              <i className="fa-regular fa-folder">
-                </i> <span>{folder.name}</span>
-              </div>
-              <div className='delAndEdit' onClick={(e) => {
-               
-                e.stopPropagation();
-                handleClickOpenDeleteDialog(folder._id, folder.name);
-              }}>
-               
-                <DeleteIcon />
-              <EditIcon />
-              </div>
-            </a>
-            {folder._id === selectFolder && (
-              <ul className={`dropdown-container ${displayItems ? 'show' : 'non'}`}>
-                {files.length > 0 ? (
-                  files.map(file => (
-                    <li key={file._id}>
-                      <a href="#" onClick={() => handleFile(file._id)}><i className="fa-regular fa-file"></i>{file.name}</a>
-                    </li>
-                  ))
-                ) : (
-                  <li>Dossier vide</li>
-                )}
+           {/*  {isCollectiviteOpen && (
+              <ul className="dropdown-menu">
+                <li><a href="#permissionDeConstruire">Demande de permission de construire</a></li>
               </ul>
-            )}
-          </li>
-        ))}
-      </ul>
+            )} */}
 
-      <ToastContainer />
+          {/* État Civil avec menu déroulant */}
+         {display}
+
+          {/* Collectivité Territoriale avec menu déroulant */}
+     
+        </ul>
+        </div>
+      </div>
     </div>
   );
 };
