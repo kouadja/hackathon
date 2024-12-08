@@ -2,6 +2,9 @@ import React, { useEffect, useRef } from 'react';
 import Sidebar from '../../components/SideBar';
 import Chart from 'chart.js/auto';
 
+import { Band, ChartThree, Example } from '../../components/AllChart'
+
+
 const DashboardCivil = () => {
   const barChartRef = useRef(null); // Référence pour le canvas du graphique en barres
   const pieChartRef1 = useRef(null); // Référence pour le canvas du premier graphique circulaire (Pie Chart)
@@ -59,14 +62,14 @@ const DashboardCivil = () => {
 
     // Données pour le graphique circulaire
     const pieData = {
-      labels: ['Red', 'Blue', 'Yellow'],
+      labels: [ 'Homme', 'Femme'],
       datasets: [{
         label: 'My First Dataset',
-        data: [300, 50, 100],
+        data: [ 50, 100],
         backgroundColor: [
           'rgb(255, 99, 132)',
           'rgb(54, 162, 235)',
-          'rgb(255, 205, 86)'
+        
         ],
         hoverOffset: 4
       }]
@@ -110,7 +113,7 @@ const DashboardCivil = () => {
           },
           tooltip: {
             callbacks: {
-              label: function(tooltipItem) {
+              label: function (tooltipItem) {
                 return tooltipItem.label + ': ' + tooltipItem.raw;
               }
             }
@@ -131,7 +134,7 @@ const DashboardCivil = () => {
           },
           tooltip: {
             callbacks: {
-              label: function(tooltipItem) {
+              label: function (tooltipItem) {
                 return tooltipItem.label + ': ' + tooltipItem.raw;
               }
             }
@@ -141,20 +144,20 @@ const DashboardCivil = () => {
     };
 
     // Initialisation du graphique en barres
-    const barCtx = barChartRef.current.getContext('2d');
-    barChartInstance.current = new Chart(barCtx, barConfig);
+    /*  const barCtx = barChartRef.current.getContext('2d');
+     barChartInstance.current = new Chart(barCtx, barConfig); */
 
     // Initialisation du premier graphique circulaire
     const pieCtx1 = pieChartRef1.current.getContext('2d');
     pieChartInstance1.current = new Chart(pieCtx1, pieConfig);
 
     // Initialisation du deuxième graphique circulaire
-    const pieCtx2 = pieChartRef2.current.getContext('2d');
-    pieChartInstance2.current = new Chart(pieCtx2, pieConfig);
+    /*     const pieCtx2 = pieChartRef2.current.getContext('2d');
+        pieChartInstance2.current = new Chart(pieCtx2, pieConfig); */
 
     // Initialisation du graphique linéaire
-    const lineCtx = lineChartRef.current.getContext('2d');
-    lineChartInstance.current = new Chart(lineCtx, lineConfig);
+    /*   const lineCtx = lineChartRef.current.getContext('2d');
+      lineChartInstance.current = new Chart(lineCtx, lineConfig); */
 
     // Nettoyage lors du démontage
     return () => {
@@ -164,6 +167,25 @@ const DashboardCivil = () => {
       lineChartInstance.current.destroy(); // Détruire le graphique linéaire
     };
   }, []);
+  const three = {
+    with: 1
+  }
+  const colorBirth = {
+    color3: '#0088FE',
+    color2: '#00C49F',
+    color1:'#FF2042',
+  }
+  const colorDead = {
+    color1: '#FF8042',
+    color2: '#0088FE',
+    color3:'#FF2042',
+  }
+  const colorWedding = {
+    color1: '#FF2042',
+    color2: '#FFBB28',
+    color3:'#d2f7ec',
+  }
+  '#0088FE', '#00C49F', '#FFBB28', '#FF8042',''
 
   return (
     <div className="containerCivil">
@@ -171,40 +193,104 @@ const DashboardCivil = () => {
       <div className="rightside">
         <div className="gridDashCivil">
           <div className="boxDashCivil">
-          <span>Total de demande</span> <br />
-          <span className='numberDash'>100</span>
+            <div className="contentBoxDashCivil">
+
+            <span className='numberDash'>100</span> <br />
+            <span>Total actes de Naissance</span> <br />
+            </div>
           </div>
           <div className="boxDashCivil">
-          <span>Total de demande</span> <br />
-          <span className='numberDash'>100</span>
-            
+ 
+
           </div>
           <div className="boxDashCivil">
-          <span>Total de demande</span> <br />
-          <span className='numberDash'>100</span>
-            
+          <div className="contentBoxDashCivil">
+
+<span className='numberDash'>78690</span> <br />
+<span>Total actes de Décès</span> <br />
+</div>
+
+          </div>
+{/*           <div className="boxDashCivil">
+          <div className="contentBoxDashCivil">
+
+<span className='numberDash'>987600</span> <br />
+<span>Total de demande</span> <br />
+</div>
+
+          </div> */}
+        </div>
+
+
+        <h1 className='titleSection'>Demande d'acte de naissance </h1>
+
+        <div className="containerChatDash">
+          <div className='contentChat'>
+
+            <ChartThree width={700} color={colorBirth} />
+          </div>
+          <div className='contentChat'>
+            <Example />
           </div>
         </div>
 
         <div className="containerChatDash">
+
           <div className='contentChat'>
-            <canvas ref={barChartRef}></canvas>
-          </div>
-          <div className='contentChat'>
+
             <canvas ref={pieChartRef1}></canvas>
+            {/*  <canvas ref={barChartRef}></canvas> */}
+            {/*   <canvas width={"900px"} ref={pieChartRef2}></canvas> */}
+
+          </div>
+
+          <div className='contentChat'>
+            {/*          <canvas ref={lineChartRef}>  </canvas> */}
+
+            <Band />
+
+          </div>
+
+
+        </div>
+        <h1  className='titleSection'>Demande d'acte de mariage</h1>
+
+        <div className="containerChatDash">
+         
+          <div className='contentChat wedding'>
+
+
+<Band/>
+</div>
+<div className='contentChat wedding'>
+
+
+<ChartThree width={700} color={colorWedding}  />
+</div>
+
+        </div>
+       
+        <h1 className='titleSection'>Demande d'acte de décès</h1>
+
+        <div className="containerChatDash">
+          <div className='contentChat'>
+            {/*     <canvas ref={barChartRef}></canvas> */}
+            <ChartThree width={700} color={colorDead}  />
+          </div>
+          <div className='contentChat'>
+            <Example />
+
           </div>
         </div>
 
-        <div className="containerChatDash">
-          
-        <div className='contentChat'>
-          <canvas width={"900px"} ref={pieChartRef2}></canvas>
-        </div>
-        
-        <div className='contentChat'>
-          <canvas ref={lineChartRef}></canvas>
-        </div>
-        </div>
+
+
+
+
+
+
+
+
 
       </div>
     </div>

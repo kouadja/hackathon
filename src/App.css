@@ -42,6 +42,12 @@
 }
  */
  /* Sidebar */
+ *{
+  font-family: "Roboto", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+   
+ }
  .sidebar-container {
   position: relative;
 }
@@ -232,24 +238,41 @@ margin-left: 280px;
  /*  border: 1px solid; */
   height: 150px;
   width: 600px;
-  font-size: 1.7rem;
-  font-weight: 600;
-text-align: center;
-line-height: 60px ;
+ /*  font-size: 1.7rem;
+  font-weight: 600; */
+/* text-align: center; */
+/* line-height: 60px ; */
+margin: 10px auto !important;
 color: rgb(18, 18, 18);
 border-radius: 10px;
 box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 
 }
+.contentBoxDashCivil{
+  /* border: 1px solid; */
+ 
+  margin: 50px 50px !important;
+
+
+
+
+}
+.numberDash{
+  font-size: 1.6rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
 .containerChatDash{
   display: flex;
   align-items: center;
   gap: 15px;
-  
-  
 
- 
+}
+
+.contentBoxDashCivil{
 
 }
 .boxDashCivil:nth-child(1){
@@ -274,19 +297,66 @@ box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px
   padding: 20px 10px ;
 
 }
-.contentChat:nth-child(2n+7){
+.contentChat{
+  width: 70%;
+  height: 300px;
 
-  width: 35%;
+
 
   
 }
-.contentChat:nth-child(4){
+/* .contentChat:nth-child(){
   width: 35%;
   
 
 }
-.contentChat:nth-child(4){
+.contentChat:nth-child(){
 
   width: 60%;
 
+} */
+
+.wedding{
+  width: 700% !important;
+ 
+}
+.titleSection{
+  background-color: white ;
+  padding: 40px;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+/* Login */
+.containerLogin{
+ display: grid;
+ place-items: center;
+ margin: 100px 0;
+
+}
+/* Footer */
+.containerFooter{
+
+  background: #000 !important;
+  border: 1px solid;
+  color: #ffffff;
+
+}
+
+/* Navbar */
+.containerNav{
+ /*  position: fixed; */
+  width: 100%;
+  background-color: #ffffff;
+  z-index: 10000;
+  
+  /* border: 1px solid; */
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+
+/* Feature */
+.containerFeature{
+  z-index: -10000;
+  margin-top: 10px !important;
 }
